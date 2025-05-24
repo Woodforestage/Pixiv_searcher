@@ -27,7 +27,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .consts import (
+from gppt.consts import (
     AUTH_TOKEN_URL,
     CALLBACK_URI,
     CLIENT_ID,
@@ -36,7 +36,7 @@ from .consts import (
     REDIRECT_URI,
     USER_AGENT,
 )
-from .utils import PROXIES, _get_chrome_option, _oauth_pkce, _slow_type
+from gppt.utils import PROXIES, _get_chrome_option, _oauth_pkce, _slow_type
 
 if TYPE_CHECKING:
     from .model_types import LoginInfo
