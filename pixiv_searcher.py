@@ -5,10 +5,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from gppt import GetPixivToken
+import chromedriver_autoinstaller
 import time
 import json
 import os
 from urllib.parse import quote_plus
+chromedriver_autoinstaller.install()  # 起動時に呼ぶだけでchromedriverを準備してくれる
 
 
 USERNAME = "kn16sub@gmail.com"

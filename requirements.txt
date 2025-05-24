@@ -3,3 +3,4 @@ matplotlib
 selenium
 pwinput
 cloudscraper
+chromedriver_autoinstaller
