@@ -1,0 +1,152 @@
+[
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": false,
+    "name": "a_type",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "0"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": true,
+    "name": "privacy_policy_notification",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "0"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": false,
+    "name": "_ga_MZ1NL4PHH0",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "GS2.1.s1748059615$o1$g1$t1748059636$j0$l0$h0"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": false,
+    "name": "b_type",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "1"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": true,
+    "name": "privacy_policy_agreement",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "7"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1750651636,
+    "httpOnly": true,
+    "name": "device_token",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "ccbcabe54f8f9f5475789697fe4e87cd"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1779595615,
+    "httpOnly": true,
+    "name": "cf_clearance",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "jSmuUkO7W70eXOgfGofKCLZUauTI.ETqcAUY3w0cxkU-1748059614-1.2.1.1-SlrMGid41z75AM3GY5rvbLAh5.u.zJhF_vNxBGDpg8c5Eb2F7yfyQmRD_RNchQKrxrJkDtwwGMXcxzdeP7tJ6lHtC6E4tH3YR1J1abXwqEapqGQVZ55W09MHQ4lK_EezITTU9grBRN_fjeAmsFqoRjEkoDT3f8LfhMF2YpNKTA7TQroFAxR7deJD1WuSKl.sKDV9L9SkyHZDkoJhIBo.IP8Ly7hlMaKggn_GCDsfboUBffwloaZEQTSi6GFmh4i_fNZ7mjiRhbjDJNAvLMdLGRoXJ2p41ICntJVGxvl57b4VWsRavtcl4tc08o7jiAVP84ZdqlwQDEKE9fKfV8XZPik6dBh5kzPsLWMbeHcq27Y"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1748146014,
+    "httpOnly": true,
+    "name": "cc1",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "2025-05-24%2013%3A06%3A53"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1750651636,
+    "httpOnly": true,
+    "name": "PHPSESSID",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "43823957_eJJTPBVniP0jH7w2cpHgdMDB2CnqQOzy"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": false,
+    "name": "_ga",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "GA1.1.1525397442.1748059615"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1748061414,
+    "httpOnly": true,
+    "name": "__cf_bm",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "Hs3JlNs8mV1iF7D00PNYcG8XbTwlo8UvJyskmEi0Etg-1748059613-1.0.1.1-CxDA2cX6PBbxyuIiKV0t6nvoDl9JZ_EmqCUTEuLRWivwiYzRoyjIeMWT5dieH8WlfskRNU2nvEx9BVF_zuPSj1lgHVdZ5mqzWvZolw7WXhOEuy4PMTVHm9sZN7cRC13c"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619614,
+    "httpOnly": false,
+    "name": "p_ab_d_id",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "1629759940"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619636,
+    "httpOnly": false,
+    "name": "c_type",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "24"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619614,
+    "httpOnly": false,
+    "name": "p_ab_id",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "5"
+  },
+  {
+    "domain": ".pixiv.net",
+    "expiry": 1782619614,
+    "httpOnly": false,
+    "name": "p_ab_id_2",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": true,
+    "value": "1"
+  }
+]

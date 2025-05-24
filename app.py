@@ -71,7 +71,7 @@ if st.session_state.cookie_got:
         )
 
         # 円の中にテキストを追加
-        ax.text(0, 0, f'健全絵：{rates["allages rate"]:.1f}%\nR18絵：{rates["r18 rate"]:.1f}%\n計{rates["total"]}件',
+        ax.text(0, 0, f'健全絵：{rates["allages rate"]:.1f}%\nR18絵：{rates["r18 rate"]:.1f}%\n計 {rates["total"]} 件',
                 ha='center', va='center', fontsize=14)
 
         # 正円にする
