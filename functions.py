@@ -19,8 +19,27 @@ COOKIE_FILE = "pixiv_cookies.json"
 GRAPH_FILE = "static/result.png"  # グラフ画像の保存場所（必要に応じて調整）
 
 def save_cookies(USERNAME,PASSWORD,headless):
-    # （省略：元のまま）
-    ...
+    """Pixivに自動ログインして、クッキーを保存"""
+    print("Pixivにログイン中...")
+    try:
+        gpt = GetPixivToken(username=USERNAME, password=PASSWORD, headless=headless)
+        gpt.login()
+
+        #セッションが活きているか確認
+        if not gpt.driver.session_id:
+            raise Exception("Selenium driver session is invalid.")
+
+        # クッキー取得
+        cookies = gpt.driver.get_cookies()
+        with open(COOKIE_FILE, "w", encoding="utf-8") as f:
+            json.dump(cookies, f, indent=2, ensure_ascii=False)
+
+        print("クッキー保存完了")
+        #gpt.driver.quit() #gpptファイルのquite命令はコメントアウトして無効化してある
+        gpt.driver.quit()
+        return 1
+    except (TimeoutException, ValueError, TypeError):
+        return 0
 
 def search_and_graph(search_word: str, headless=True):
     if not os.path.exists(COOKIE_FILE):
