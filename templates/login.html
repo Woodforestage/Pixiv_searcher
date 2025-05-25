@@ -1,8 +1,10 @@
 <!doctype html>
 <html>
-<head><title>クッキー取得</title></head>
+<head><title>Cookie取得</title></head>
 <body>
-  <h1>今日は初回アクセスなのでクッキーを取得します</h1>
+  <h1>R18 比率検索WEB ver1.0</h1>
+    <p>Cookieを取得</p>
+
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, message in messages %}
       <p style="color:{% if category=='error' %}red{% elif category=='warning' %}orange{% else %}green{% endif %}">{{ message }}</p>
@@ -11,7 +13,7 @@
   <form method="post">
     ID: <input type="text" name="username" placeholder="example@example.com"><br>
     PASS: <input type="password" name="password"><br>
-    <button type="submit" name="login">ログインしてクッキーを取得</button>
+    <button type="submit" name="login">ログインしてCookieを取得</button>
   </form>
 </body>
 </html>

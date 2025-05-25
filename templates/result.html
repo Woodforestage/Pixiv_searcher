@@ -1,13 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head><title>検索結果</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>検索結果</title>
+</head>
 <body>
-  <h1>検索結果: {{ search_words }}</h1>
-  <img src="{{ url_for('plot_png') }}" alt="グラフ画像">
-  <p>健全絵: {{ rates['allages'] }}件 ({{ rates['allages rate'] }}%)</p>
-  <p>R18絵: {{ rates['r18'] }}件 ({{ rates['r18 rate'] }}%)</p>
-  <p>計 {{ rates['total'] }} 件</p>
+    <h1>R18 比率検索WEB ver1.0</h1>
 
-  <a href="{{ url_for('index') }}">検索に戻る</a>
+    <form method="post" action="/">
+        <label>キャラクター名を入力：</label>
+        <input type="text" name="search_words" value="{{ search_words or '' }}">
+        <button type="submit" name="search">検索</button>
+    </form>
+
+    {% if result %}
+        <h2>検索結果</h2>
+        <p>健全絵：{{ result['allages'] }} 件（{{ result['allages rate']|round(1) }}%）</p>
+        <p>R-18絵：{{ result['r18'] }} 件（{{ result['r18 rate']|round(1) }}%）</p>
+        <p>合計：{{ result['total'] }} 件</p>
+
+        <img src="{{ url_for('static', filename='result.png') }}" alt="検索結果グラフ" style="max-width: 500px;">
+    {% endif %}
 </body>
 </html>
+
