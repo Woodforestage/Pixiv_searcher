@@ -1,0 +1,6 @@
+Flask
+selenium
+webdriver-manager
+matplotlib
+pixivpy3
+
