@@ -4,4 +4,5 @@ webdriver-manager
 matplotlib
 pixivpy3
 gunicorn
+pwinput
 
