@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+<head><title>検索結果</title></head>
+<body>
+  <h1>検索結果: {{ search_words }}</h1>
+  <img src="{{ url_for('plot_png') }}" alt="グラフ画像">
+  <p>健全絵: {{ rates['allages'] }}件 ({{ rates['allages rate'] }}%)</p>
+  <p>R18絵: {{ rates['r18'] }}件 ({{ rates['r18 rate'] }}%)</p>
+  <p>計 {{ rates['total'] }} 件</p>
+
+  <a href="{{ url_for('index') }}">検索に戻る</a>
+</body>
+</html>

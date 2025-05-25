@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><title>R18 比率検索WEB</title></head>
+<body>
+  <h1>R18 比率検索WEB</h1>
+  {% if not cookie_got %}
+    <p>今日はまだクッキーを取得していません。</p>
+  {% else %}
+    <p>今日はすでにクッキーを取得済みです</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p style="color:{% if category=='error' %}red{% elif category=='warning' %}orange{% else %}green{% endif %}">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+    <form method="post">
+      キャラ名: <input type="text" name="search_words" placeholder="キーワード"><br>
+      <button type="submit" name="search">検索</button>
+    </form>
+  {% endif %}
+</body>
+</html>
