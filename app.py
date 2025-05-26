@@ -3,7 +3,7 @@ import os
 from functions import save_cookies as scs, search_and_graph as sag  # グラフも含む関数に変更
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'
+app.secret_key = 'd3tz9s82f99ep25s'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

@@ -1,5 +1,5 @@
 Flask
-selenium
+playwright
 webdriver-manager
 matplotlib
 pixivpy3
