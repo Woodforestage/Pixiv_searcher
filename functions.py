@@ -43,7 +43,8 @@ def save_cookies(USERNAME,PASSWORD,headless):
 
 def search_and_graph(search_word: str, headless=True):
     if not os.path.exists(COOKIE_FILE):
-        raise FileNotFoundError("ログインクッキーが見つかりません。まず login_and_save_cookies() を実行してください。")
+        raise FileNotFoundError("ログインクッキーが見つかりません。login_and_save_cookies() を実行します")
+        
 
     options = Options()
     if headless:
@@ -116,7 +117,7 @@ def search_and_graph(search_word: str, headless=True):
 
     os.makedirs(os.path.dirname(GRAPH_FILE), exist_ok=True)  # ディレクトリなければ作る
     plt.savefig(GRAPH_FILE)
-    plt.close()
+    plt.close(fig)
     # --------------------------------------------------------------------
 
     # グラフのパスも返すと便利です
