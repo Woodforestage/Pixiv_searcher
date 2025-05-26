@@ -1,22 +1,22 @@
-# Playwright対応の公式Pythonイメージ（Chromiumの依存も含む）
+# Playwright 対応の公式 Python イメージ
 FROM mcr.microsoft.com/playwright/python:v1.43.0-jammy
 
-# 作業ディレクトリの設定
 WORKDIR /app
 
-# 依存パッケージのインストール
+# Python依存パッケージをインストール
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ソースコードをコピー
+# アプリコードをコピー
 COPY . .
 
-# PlaywrightでChromiumブラウザを明示的にインストール
+# Playwrightのブラウザ（Chromium）を明示的にインストール、キャッシュの削除
+ARG CACHEBUST=1　
+
 RUN playwright install chromium
 
-# ポート開放（Renderが10000ポートを使う）
+# Renderが使うポートを開放
 EXPOSE 10000
 
-# アプリの起動（RenderではPORT環境変数を使う）
+# アプリを起動
 CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
-
