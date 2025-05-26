@@ -1,1 +1,1 @@
-web: gunicorn app:app --workers=1 --threads=1
+web: gunicorn -b 0.0.0.0:5000 app:app
