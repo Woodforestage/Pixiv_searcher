@@ -13,7 +13,7 @@ COPY . .
 # Playwrightのブラウザ（Chromium）を明示的にインストール、キャッシュの削除
 ARG CACHEBUST=1　
 
-RUN playwright install chromium
+RUN playwright install --with-deps
 
 # Renderが使うポートを開放
 EXPOSE 10000
