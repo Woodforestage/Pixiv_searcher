@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash, send_file
 import os
-from functions import save_cookies as scs, search_and_graph as lcs  # グラフも含む関数に変更
+from functions import save_cookies as scs, search_and_graph as sag  # グラフも含む関数に変更
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
@@ -38,7 +38,7 @@ def index():
             flash("キャラクター名を入力してください", 'warning')
             return render_template('search.html', cookie_got=True)
 
-        result = lcs(search_words, headless=True)
+        result = sag(search_words, headless=True)
         if result == "error":
             # ログアウト処理
             session.pop('cookie_got', None)  # セッションからcookie情報削除
