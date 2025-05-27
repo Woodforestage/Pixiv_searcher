@@ -1,20 +1,18 @@
 from playwright.sync_api import sync_playwright
-import time
-import json
 import os
 from urllib.parse import quote_plus
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import db
 
 rcParams['font.family'] = 'Meiryo'
 
-COOKIE_FILE = "pixiv_cookies.json"
 GRAPH_FILE = "static/result.png"
 
 def save_cookies(username, password, headless=True):
-    """PixivにPlaywrightでログインしてクッキー保存"""
+    """PixivにPlaywrightでログインしてクッキー取得し、そのままdictで返す"""
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        browser = p.chromium.launch(headless=headless, args=["--no-sandbox"])
         context = browser.new_context()
 
         page = context.new_page()
@@ -28,28 +26,27 @@ def save_cookies(username, password, headless=True):
             page.wait_for_url("https://www.pixiv.net/*", timeout=10000)
 
             cookies = context.cookies()
-            with open(COOKIE_FILE, "w", encoding="utf-8") as f:
-                json.dump(cookies, f, indent=2, ensure_ascii=False)
 
             browser.close()
-            return 1
+            return 1, cookies
 
         except Exception as e:
             print("ログイン失敗:", e)
             browser.close()
-            return 0
+            return 0, None
 
-def search_and_graph(search_word: str, headless=True):
-    if not os.path.exists(COOKIE_FILE):
-        raise FileNotFoundError("ログインクッキーが見つかりません")
+
+def search_and_graph(username, search_word: str, headless=True):
+    """DBからユーザーのクッキーを取得し、検索・グラフ生成"""
+    cookies = db.get_latest_cookies(username)
+    if not cookies:
+        return "error"
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        browser = p.chromium.launch(headless=headless, args=["--no-sandbox"])
         context = browser.new_context()
 
-        # クッキーを読み込んでPixivドメインに設定
-        with open(COOKIE_FILE, "r", encoding="utf-8") as f:
-            cookies = json.load(f)
+        # クッキーをセット（Playwrightのdict形式なのでそのまま使う）
         context.add_cookies(cookies)
 
         page = context.new_page()
