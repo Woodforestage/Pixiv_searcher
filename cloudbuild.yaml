@@ -3,10 +3,9 @@ steps:
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/your-image-name', '.']
 
 options:
-  logging: CLOUD_LOGGING_ONLY          # ログをCloud Loggingに送る設定
-  logsBucket: 'projects/_/buckets/_Default'  # ログを保存するCloud Storageバケット（デフォルトバケット）
+  logging: CLOUD_LOGGING_ONLY  # ログはCloud Loggingに送られる
 
-timeout: '1200s'  # タイムアウト（必要に応じて調整）
+timeout: '1200s'
 
 images:
   - 'gcr.io/$PROJECT_ID/your-image-name'
