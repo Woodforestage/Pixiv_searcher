@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import db
 
-rcParams['font.family'] = 'Meiryo'
+rcParams['font.family'] = 'IPAGothic'
 
 GRAPH_FILE = "static/result.png"
 
