@@ -3,31 +3,36 @@ name: Deploy to Cloud Run
 on:
   push:
     branches:
-      - main  # mainブランチへpushされたときに動く
+      - main  # mainブランチへのpushで実行
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
 
-      - name: Build and push Docker image
-        run: |
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/your-app-name
+    - name: Configure Docker for GCP
+      run: gcloud auth configure-docker
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy your-service-name \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/your-app-name \
-            --region us-central1 \
-            --platform managed \
-            --quiet
+    - name: Build and push Docker image
+      run: |
+        IMAGE=gcr.io/${{ secrets.GCP_PROJECT_ID }}/pixiv-r18rate-webapp
+        docker build -t $IMAGE .
+        docker push $IMAGE
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy my-app \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-app \
+          --platform managed \
+          --region asia-northeast1 \
+          --allow-unauthenticated
