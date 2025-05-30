@@ -6,7 +6,7 @@ from functions import save_cookies as scs, search_and_graph as sag
 
 app = Flask(__name__)
 app.secret_key = 'd3tz9s82f99ep25s'
-headless = False
+headless = True
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
