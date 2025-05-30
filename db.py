@@ -67,7 +67,7 @@ def save_cookies_to_db(username: str, cookie_dict: list):
     conn.close()
 
 
-def load_cookies_from_db(username: str):
+def get_latest_cookies(username: str):
     """最新のクッキーをDBから取得"""
     user_id = get_user_id(username)
     conn = get_connection()
