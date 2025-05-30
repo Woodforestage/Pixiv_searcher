@@ -8,6 +8,14 @@ app = Flask(__name__)
 app.secret_key = 'd3tz9s82f99ep25s'
 headless = True
 
+#Debug config
+debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'#Anaconda Prompt 環境変数：FLASK_DEBUG=true
+port_setter=8080
+if debug_mode:
+    port_setter=5000 #デバックモードではポート5000を使う
+    headless=False
+    print('Debug Mode : ON')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -24,7 +32,7 @@ def index():
             try:
                 cookies = json.loads(cookie_json)
             except Exception as e:
-                flash("クッキーの読み込みに失敗しました", 'danger')
+                flash("クッキーの読み込みに失敗しました", 'warning')
                 session['cookie_got'] = False
                 return redirect(url_for('login'))
 
@@ -105,7 +113,5 @@ def graph():
         return '', 404
     return send_file(graph_path, mimetype='image/png')
 
-debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'#Anaconda Prompt 環境変数：FLASK_DEBUG=true
-
 if __name__ == '__main__':
-    app.run(debug=debug_mode, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    app.run(debug=debug_mode, host='0.0.0.0', port=int(os.environ.get('PORT', port_setter)))

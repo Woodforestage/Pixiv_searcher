@@ -45,6 +45,7 @@ def save_cookies(username, password, headless):
 
             # ✅ ここでDB保存を追加
             db.save_cookies_to_db(username, cookies)
+            print("DBにクッキーを保存しました")
 
             browser.close()
             return 1, cookies

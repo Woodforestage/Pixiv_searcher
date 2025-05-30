@@ -65,7 +65,7 @@ def save_cookies_to_db(username: str, cookie_dict: list):
     cur.execute("INSERT INTO cookies (user_id, cookie_data) VALUES (?, ?)", (user_id, cookie_json))
     conn.commit()
     conn.close()
-    print("DBにクッキーを保存しました")
+    
 
 
 def get_latest_cookies(username: str):
