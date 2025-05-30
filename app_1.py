@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 import db  # DB操作用のモジュール（先のsqlite管理関数群）
 import os
-from functions import save_cookies as scs, search_and_graph as sag
+from functions import save_cookies as scs, search_and_graph as sag, is_cokkie_valid
 
 
 app = Flask(__name__)
@@ -18,15 +18,27 @@ def index():
 
         session['username'] = username
 
-        # DBでクッキーの有無判定
-        cookies = db.get_latest_cookies(username)
-        if cookies:
-            # クッキーがあるなら検索フォームへ
-            session['cookie_got'] = True
-            return redirect(url_for('search'))
+        # DBからクッキーを取得（JSON文字列ならjson.loadsで辞書に変換）
+        cookie_json = db.get_latest_cookies(username)
+        if cookie_json:
+            try:
+                cookies = json.loads(cookie_json)
+            except Exception as e:
+                flash("クッキーの読み込みに失敗しました", 'danger')
+                session['cookie_got'] = False
+                return redirect(url_for('login'))
+
+            # クッキーの有効判定
+            if is_cookie_valid(cookies):
+                session['cookie_got'] = True
+                return redirect(url_for('search'))
+            else:
+                flash("クッキーは無効です。再ログインしてください。", 'warning')
+                session['cookie_got'] = False
+                return redirect(url_for('login'))
+
         else:
-            # クッキーなければログインフォームへ
-            flash("Cookieが無効か存在しません")
+            flash("Cookieが存在しません。ログインしてください。", 'warning')
             session['cookie_got'] = False
             return redirect(url_for('login'))
 
