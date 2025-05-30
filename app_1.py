@@ -96,4 +96,4 @@ def graph():
 debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'#Anaconda Prompt 環境変数：FLASK_DEBUG=true
 
 if __name__ == '__main__':
-    app.run(debug=debug_mode, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=debug_mode, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
