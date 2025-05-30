@@ -9,50 +9,49 @@ rcParams['font.family'] = 'Meiryo'
 
 GRAPH_FILE = "static/result.png"
 
-def save_cookies(username, headless=False):
+def save_cookies(username, password, headless):
     """
-    GUIブラウザでPixivにログインし、ユーザーがログインを手動で完了したら、
-    自動的にCookieを取得してDBに保存する。
+    Playwrightを用いてPixivにログインし、Cookieを保存する。
+    パスキー認証を回避するためのURL指定とブラウザ設定付き。
 
     Parameters:
-        username (str): 対象ユーザー名
-        headless (bool): ブラウザを非表示で開くかどうか（GUI必須なので通常False）
+        username (str): Pixivのユーザー名またはメールアドレス
+        password (str): パスワード
+        cookie_path (str): 保存先のCookieファイル（JSON）
 
     Returns:
         int, list: 成功(1)/失敗(0), CookieリストまたはNone
     """
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        browser = p.chromium.launch(
+            headless=headless,
+            args=["--disable-webauthn", "--disable-features=WebAuthentication"]
+        )
         context = browser.new_context()
         page = context.new_page()
 
-        page.goto("https://accounts.pixiv.net/login")
-        print("ブラウザでPixivのログイン画面が開きました。手動でログインしてください。")
+        page.goto("https://accounts.pixiv.net/login?return_to=https%3A%2F%2Fwww.pixiv.net%2F")
 
         try:
-            # ログイン完了判定：最大5分まで待つ
-            page.wait_for_url("https://www.pixiv.net/*", timeout=5*60*1000)  # URLがpixivトップ等に変わるのを待つ
-            # または
-            # page.wait_for_selector("css=selector_for_logged_in_user_icon", timeout=5*60*1000)
+            page.fill('input[type="text"]', username)
+            page.fill('input[type="password"]', password)
+            page.click('button[type="submit"]')
 
-            print("ログインが完了しました。Cookieを取得します。")
+            # ログイン後の待機
+            page.wait_for_load_state('networkidle')
 
+            # Cookie取得
             cookies = context.cookies()
-            # ここでDB保存関数呼び出し
+
+            # ✅ ここでDB保存を追加
             db.save_cookies_to_db(username, cookies)
 
-            print("✅ CookieをDBに保存しました。")
-
-        except TimeoutError:
-            print("[ERROR] ログイン完了が確認できませんでした。")
-            cookies = None
-
-        finally:
             browser.close()
-
-        if cookies:
             return 1, cookies
-        else:
+
+        except Exception as e:
+            print(f"[ERROR] Pixivログイン失敗: {e}")
+            browser.close()
             return 0, None
 
 def search_and_graph(username, search_word: str, headless=True):
