@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head><title>ユーザー名入力</title></head>
+<body>
+  <h1>ユーザー名を入力してください</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <p style="color:{% if category == 'error' %}red{% elif category == 'warning' %}orange{% else %}green{% endif %}">{{ message }}</p>
+    {% endfor %}
+  {% endwith %}
+  <form method="post">
+    ユーザー名: <input type="text" name="username" required>
+    <button type="submit">次へ</button>
+  </form>
+  <script>
+    function saveUsernameToCookie() {
+      const username = document.getElementById('username').value;
+      if (username) {
+        document.cookie = `username=${encodeURIComponent(username)}; path=/; max-age=31536000`; // 1年間保持
+      }
+    }
+  </script>
+
+
+</body>
+</html>
+
