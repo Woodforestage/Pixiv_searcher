@@ -4,6 +4,7 @@ from urllib.parse import quote_plus
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import db
+import re
 
 rcParams['font.family'] = 'IPAGothic'
 
@@ -12,15 +13,10 @@ GRAPH_FILE = "static/result.png"
 def save_cookies(username, password, headless):
     """
     Playwrightを用いてPixivにログインし、Cookieを保存する。
-    パスキー認証を回避するためのURL指定とブラウザ設定付き。
-
-    Parameters:
-        username (str): Pixivのユーザー名またはメールアドレス
-        password (str): パスワード
-        cookie_path (str): 保存先のCookieファイル（JSON）
+    Apple認証ページへのリダイレクトも検出する。
 
     Returns:
-        int, list: 成功(1)/失敗(0), CookieリストまたはNone
+        str, list | None: 'success', 'error', 'apple_redirect_error', Cookieリスト or None
     """
     with sync_playwright() as p:
         browser = p.chromium.launch(
@@ -30,30 +26,42 @@ def save_cookies(username, password, headless):
         context = browser.new_context()
         page = context.new_page()
 
-        page.goto("https://accounts.pixiv.net/login?return_to=https%3A%2F%2Fwww.pixiv.net%2F")
-
         try:
+            page.goto("https://accounts.pixiv.net/login?return_to=https%3A%2F%2Fwww.pixiv.net%2F")
+            page.wait_for_selector('input[type="text"][autocomplete*="username"]', timeout=5000)
+
             page.fill('input[type="text"]', username)
+            page.wait_for_timeout(1000)
             page.fill('input[type="password"]', password)
+            page.wait_for_timeout(1000)
             page.click('button[type="submit"]')
 
-            # ログイン後の待機
             page.wait_for_load_state('networkidle')
 
-            # Cookie取得
-            cookies = context.cookies()
+            # Apple認証ページへのリダイレクト確認
+            if re.search(r"appleid\.apple\.com", page.url):
+                print("[ERROR] Apple認証ページへのリダイレクトを検出")
+                browser.close()
+                return 'apple_redirect_error', None
 
-            # ✅ ここでDB保存を追加
-            db.save_cookies_to_db(username, cookies)
-            print("DBにクッキーを保存しました")
-
-            browser.close()
-            return 1, cookies
+            # ログイン成功判定（ユーザーアイコンが表示されるか）
+            try:
+                page.wait_for_selector("div.user-icon", timeout=5000)
+                cookies = context.cookies()
+                db.save_cookies_to_db(username, cookies)
+                print("DBにクッキーを保存しました")
+                browser.close()
+                return 'success', cookies
+            except Exception:
+                print("[ERROR] ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。")
+                browser.close()
+                return 'error', None
 
         except Exception as e:
             print(f"[ERROR] Pixivログイン失敗: {e}")
             browser.close()
-            return 0, None
+            return 'error', None
+
 
 def search_and_graph(username, search_word: str, headless=True):
     """DBからユーザーのクッキーを取得し、検索・グラフ生成"""
@@ -61,12 +69,12 @@ def search_and_graph(username, search_word: str, headless=True):
     if not cookies:
         print("Cookieが保存されていません")
         return "error"
-    
+
     cookies = filter_pixiv_cookies(cookies)
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=headless, args=["--no-sandbox"])
-        
+
         context = browser.new_context()
         context.add_cookies(cookies)
         page = context.new_page()
@@ -79,7 +87,6 @@ def search_and_graph(username, search_word: str, headless=True):
         except:
             print("ログインしていません")
 
-        
         urls = {
             "allages": f"https://www.pixiv.net/tags/{quote_plus(search_word)}/artworks?mode=safe&s_mode=s_tag",
             "r18": f"https://www.pixiv.net/tags/{quote_plus(search_word)}/artworks?mode=r18&s_mode=s_tag"
@@ -98,42 +105,42 @@ def search_and_graph(username, search_word: str, headless=True):
 
         browser.close()
 
-    total = counts["allages"] + counts["r18"]
-    if total == 0:
-        return "error"
+        total = counts["allages"] + counts["r18"]
+        if total == 0:
+            return "error"
 
-    rates = {
-        'allages': counts["allages"],
-        'r18': counts["r18"],
-        'allages rate': counts["allages"] / total * 100,
-        'r18 rate': counts["r18"] / total * 100,
-        'total': total
-    }
+        rates = {
+            'allages': counts["allages"],
+            'r18': counts["r18"],
+            'allages rate': counts["allages"] / total * 100,
+            'r18 rate': counts["r18"] / total * 100,
+            'total': total
+        }
 
-    # グラフ生成
-    labels = ['健全絵', 'R-18']
-    sizes = [rates['allages'], rates['r18']]
-    colors = ['skyblue', 'lightcoral']
+        # グラフ生成
+        labels = ['健全絵', 'R-18']
+        sizes = [rates['allages'], rates['r18']]
+        colors = ['skyblue', 'lightcoral']
 
-    fig, ax = plt.subplots()
-    ax.pie(
-        sizes,
-        labels=labels,
-        autopct=lambda p: f"{round(p * sum(sizes) / 100):,}件",
-        startangle=90,
-        colors=colors,
-        wedgeprops=dict(width=0.45),
-        pctdistance=0.75
-    )
-    ax.text(0, 0, f'健全絵：{rates["allages rate"]:.1f}%\nR18絵：{rates["r18 rate"]:.1f}%\n計 {rates["total"]} 件',
-            ha='center', va='center', fontsize=14)
-    ax.axis('equal')
+        fig, ax = plt.subplots()
+        ax.pie(
+            sizes,
+            labels=labels,
+            autopct=lambda p: f"{round(p * sum(sizes) / 100):,}件",
+            startangle=90,
+            colors=colors,
+            wedgeprops=dict(width=0.45),
+            pctdistance=0.75
+        )
+        ax.text(0, 0, f'健全絵：{rates["allages rate"]:.1f}%\nR18絵：{rates["r18 rate"]:.1f}%\n計 {rates["total"]} 件',
+                ha='center', va='center', fontsize=14)
+        ax.axis('equal')
 
-    os.makedirs(os.path.dirname(GRAPH_FILE), exist_ok=True)
-    plt.savefig(GRAPH_FILE)
-    plt.close(fig)
+        os.makedirs(os.path.dirname(GRAPH_FILE), exist_ok=True)
+        plt.savefig(GRAPH_FILE)
+        plt.close(fig)
 
-    return rates, GRAPH_FILE
+        return rates, GRAPH_FILE
 
 
 def filter_pixiv_cookies(cookies):
@@ -144,6 +151,7 @@ def filter_pixiv_cookies(cookies):
             c['domain'] = '.pixiv.net'
             filtered.append(c)
     return filtered
+
 
 def is_cookie_valid(cookies):
     # Pixivはセッションが24時間程度で切れるため、簡易的に有効期限を見る

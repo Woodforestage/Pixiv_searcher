@@ -61,19 +61,23 @@ def login():
         return redirect(url_for('index'))
 
     if request.method == 'POST':
+        username = request.form.get('username', '') #入力値を反映
         password = request.form.get('password', '')
         if not password:
             flash("パスワードを入力してください", 'warning')
             return render_template('login.html', username=username)
 
-        result = scs(username, password, headless)
-        if result == 0:
+        status, cookie = scs(username, password, headless)
+        if status == 'error':
             flash("ユーザーネームまたはパスワードが間違っています", 'error')
             return render_template('login.html', username=username)
-
-        session['cookie_got'] = True
-        flash("クッキーの取得が完了しました", 'success')
-        return redirect(url_for('search'))
+        elif status == 'apple_redirect_error':
+            flash("Apple認証ページにリダイレクトされました。Pixiv IDでのログインをご使用ください。", 'error')
+            return render_template('username.html', username=username)
+        elif status == 'success':
+            session['cookie_got'] = True
+            flash("クッキーの取得が完了しました", 'success')
+            return redirect(url_for('search'))
 
     return render_template('login.html', username=username)
 
