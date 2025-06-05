@@ -6,6 +6,8 @@ from matplotlib import rcParams
 import db
 import re
 
+print("Ver 6/06 1:19")
+
 rcParams['font.family'] = 'IPAGothic'
 
 GRAPH_FILE = "static/result.png"
@@ -23,17 +25,31 @@ def save_cookies(username, password, headless):
             headless=headless,
             args=["--disable-webauthn", "--disable-features=WebAuthentication"]
         )
-        context = browser.new_context()
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/114.0.0.0 Safari/537.36",
+            locale="ja-JP"
+        )
+
         page = context.new_page()
+
+        # webdriver偽装スクリプト挿入
+        page.add_init_script(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+        )
 
         try:
             page.goto("https://accounts.pixiv.net/login?return_to=https%3A%2F%2Fwww.pixiv.net%2F")
-            page.wait_for_selector('input[type="text"][autocomplete*="username"]', timeout=5000)
+            page.wait_for_selector('input[type="text"][autocomplete*="username"]', timeout=8000)
 
-            page.fill('input[type="text"]', username)
-            page.wait_for_timeout(1000)
-            page.fill('input[type="password"]', password)
-            page.wait_for_timeout(1000)
+            # typeで入力（delayを入れて人間っぽく）
+            page.type('input[type="text"]', username, delay=100)
+            page.wait_for_timeout(500)
+            page.type('input[type="password"]', password, delay=100)
+            page.wait_for_timeout(500)
+
+            # ログインボタンをクリック（念のためセレクタを確認）
             page.click('button[type="submit"]')
 
             page.wait_for_load_state('networkidle')
@@ -46,7 +62,7 @@ def save_cookies(username, password, headless):
 
             # ログイン成功判定（ユーザーアイコンが表示されるか）
             try:
-                page.wait_for_selector("div.user-icon", timeout=5000)
+                page.wait_for_selector("div.user-icon", timeout=7000)
                 cookies = context.cookies()
                 db.save_cookies_to_db(username, cookies)
                 print("DBにクッキーを保存しました")
@@ -61,6 +77,8 @@ def save_cookies(username, password, headless):
             print(f"[ERROR] Pixivログイン失敗: {e}")
             browser.close()
             return 'error', None
+
+
 
 
 def search_and_graph(username, search_word: str, headless=True):
