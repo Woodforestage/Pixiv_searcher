@@ -1,7 +1,10 @@
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 import db  # DB操作用のモジュール（先のsqlite管理関数群）
 import os
-from functions import save_cookies as scs, search_and_graph as sag, is_cookie_valid
+from functionsp_p import save_cookies as scs, search_and_graph as sag, is_cookie_valid
+
+#db初期化
+db.init_db()
 
 
 app = Flask(__name__)
