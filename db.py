@@ -55,7 +55,7 @@ def get_user_id(username: str):
     return user_id
 
 
-def save_cookies_to_db(username: str, cookie_dict: list):
+def save_cookie_to_db(username: str, cookie_dict: list):
     """クッキーをDBに保存"""
     user_id = get_user_id(username)
     conn = get_connection()
